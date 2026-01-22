@@ -7,7 +7,11 @@ print("Video Title:", yt.title)
 
 filename = input("Name for the file (no file extension): ")
 
-caption = next(iter(yt.captions))
+skip_captions = False
+try:
+    caption = next(iter(yt.captions))
+except:
+    skip_captions = True
 
 try:
     caption = yt.captions['en']
@@ -23,7 +27,8 @@ except:
         except:
             print(f"No English Captions Available. Language is {yt.captions.keys()}")
 
-caption.save_captions(f"{filename}_subtitles.srt")
+if not skip_captions:
+    caption.save_captions(f"{filename}_subtitles.srt")
 
 stream = yt.streams.filter(progressive=True, file_extension='mp4').first()
 stream.download(filename=f"{filename}_video.mp4")
